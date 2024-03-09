@@ -400,4 +400,7 @@ const updateCoverImage = asyncHandler( async ( req,res ) => {
     new apiResponse(200,user,"CoverImage updated successfully")
   )
 })
+
+// Use the aggregation pipelines of mongodb 
+
 export { registerUser,loginUser,logoutUser,accessfromrefresh,changeCurrentPassword,updateAccountDetails,updateAvatar,updateCoverImage };
