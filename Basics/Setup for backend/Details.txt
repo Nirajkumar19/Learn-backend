@@ -1,0 +1,122 @@
+***************** Backend Development ***********************
+# Two major components:- 1) A programming lang (JS) 2) A Database (Mongo,MySQL,Postgres)
+
+# We are learning javascript based backend.
+We are dealing with either data,file or thirc parties.
+
+We are mostly do the things in "src" file.
+Outside of src file we have package.json(it has all the dependencies, dev dependencies etc..) and .env(it has the environment variables) file also with that if we are doing thing with github then we have also git file, readme, prettier file.
+
+Along with that we have mainly three file.
+i) index file --> This file is the entry point of the database. We connect the database inside it.
+ii) App file --> It has all the cinfig,cookies,urlencode
+ii) constants --> It has enums, DB-name
+
+With that we have directory also those are,
+i) DB --> Actual code which connect the database.
+ii) Models --> Schema of the database.
+iii) Controllers --> All the functions written inside Controllers.
+iv) Routes --> Route all the pages
+v) Middleware --> Security 
+vi) Utils --> Methods which are used so many times. Like send mail when user login, when user face any security breach, when user forget their password. So sending mail function written inside util. 
+
+
+# We can create our model design on eraser platform.
+
+**For creating package.json we run the npm init command.**
+
+We are also creating a public folder. Mainly for images or avatar. Because Sometimes we want to store the images on local so that if internet is not there then we can able to show the images.
+
+
+We are installing nodemon as devdependencies for restarting the server by automatic whenever we change the code.
+For that we run the cmd "npm i -D nodemon"
+-D because we want to install as devdependencies.
+devdependencies means code will not go in production time, and dependencies means code will go in production. So if we install as devdependencies then heavy code will not affect in the production time.
+
+For running the server we have to type npm run nodemon.
+We can setup the things in package.json inside script object.
+
+**************** Steps for connecting the database by mongo *****************
+For connecting the Database, we have two approach.
+1. Write the code in db file and then import them into index file and then execute it.
+2. Write the all the code of database connection inside the index.js file and then run within that.
+But the first approach will lead into writting the code in efficient way and in clean way.
+
+# We have to install the dotenv package because we importing the environmental variable through .env file so this will done through dotenv package.
+Along with that we have to install express and mongoose package.
+
+# For connecting the database always use async await with try and catch.
+By profetational appraoch we use the IIFE(Immediately invoked function)
+
+# Code for connecting the database :- mongoose.connect('URL_NAME/DATABASE_NAME') but we have to write this code inside the async await function.
+
+# For environment variable to be availabel everywhere we have to import in that file which are going to be run at the first time, that is index.js.
+Famous quote written in the documentation of dotenv
+"As early as possible in your application, import and configure dotenv".
+
+cmd for importing environment variable --> "require('dotenv').config()"
+But here we are using require statement which will lead to in incosistnet writting of code.
+So there is import equivalent to require.
+
+cmd is:-
+import dotenv from "dotenv";
+dotenv.config({
+    path: './env'
+});
+along with that we havr to add experimental feature in package.json-->script
+that is-->
+"dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+
+before adding experimental feature "dev" was--> "dev": nodemon src/index.js
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+                           -:Some points:-
+In video.models.js(in video models), we have to insert so many videos at a time, so for handle large amount of query we are using mongoose aggregation pipeline package.
+Search that package in npm as mongoose-aggregate....
+So install it from npm.
+For using them, simply first import them and then in video model file, before exporting the schema we have to write some codes. 
+That code is 
+videoSchema.plugin(import_name);
+--> We are plugin this aggregate pipeline in the middleware so that we can use it.
+
+
+In userSchema, We have to hash our password, so for doing that we use bcrypt package.
+Along with that we also use Token, for which we use jwt package.
+
+But directly we can't decrypt the password. For that we have to use some hooks provided by mongoose.
+One of the hooks is pre(), it will help to do whatever we want just before the operation.
+Like operation is "save" then just before saving into the database we can decrypt the password.
+Similar wise we have also post() hooks. So we will use that as per our need.
+
+Here we are using pre() hook.
+Pre() hook will take two arguments, pre(event_name,callback_function)
+eg: pre("save",function(next) {});
+We are not using arrow function here because in arrow function we don't have any this keyword property. That's why we using simple function.
+
+jwt is an open standard that helps to securely transmittin the information between parties as a JSON object.
+jwt create the token with the help of sign(), it will take two arguments 1. payload object 2. Access_token 3. Expiry object
+
+********************************************************************
+--------------- Access Token and Refresh Token ---------------------
+# Access Token is mainly valid for short duration of time but Refresh Token is valid for long duration of time.
+# We generally use access token for authentication of user but refresh token use for revalidate the user authentication.
+Let's take an example of uploading file on server.
+So for uploading the file we need to give authorization. So this authorization is validate with the help of access token 
+The time for expiry of access token is now completed then user again has to enter the password for doing the same functionality. But we are not doing like that. Instead of again reentering the password we are authenticate with the help of refresh token and after authenticate we give a new access token to the user.
+
+
+
+*********************************************************************
+--------------- File upload ---------------------------------------
+We are uploading the file on cloudinary and use the link given by them for respective image,video,file etc....
+"import install cloudinary"
+
+We also need some packages to upload the file like "express file-upload" , "multer" but we mostly use multer instead of express file upload.
+"npm install multer"
+
+So we create one utility for cloudinary because we use it regularly.
+For that we have to configure it which is mentioned in the cloudinary document.
+
+File uploading process done in clodinary.js file.
+
+Now we are creating a middleware using multer. Because we want that when we want to upload the file then first it will go throug the multer middleware and then go to cloudinary part.

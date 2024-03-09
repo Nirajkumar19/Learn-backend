@@ -1,0 +1,7 @@
+For Creating a Server, Steps we have to follow:-
+1. Creating directory
+2. Create index.js file
+3. Initialise NPM --> npm init 
+4. Install the Express Package --> npm i express
+5. Write Server application in index.js
+6. Start Server
